@@ -1,13 +1,24 @@
 #! /usr/bin/env python
 
+import os
 from setuptools import setup, find_packages
 
+PACKAGE_NAME = "idr_torch"
+VERSIONFILE = "VERSION"
+AUTHOR = "IDRIS"
+AUTHOR_EMAIL = "assist@idris.fr"
+URL = "https://www.idris.fr"
+
+with open(os.path.join(PACKAGE_NAME, VERSIONFILE), "r") as file:
+    VERSION = file.read().strip()
+
 setup(
-    name="idr_torch",
-    version="2.0.0",
-    author="IDRIS",
-    author_email="assist@idris.fr",
-    url="http://www.idris.fr/",
+    name=PACKAGE_NAME,
+    version=VERSION,
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
+    url=URL,
     packages=find_packages(),
+    include_package_data=True,
     license="MIT",
 )

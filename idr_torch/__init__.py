@@ -1,6 +1,6 @@
 import sys
 
-from .interface import Interface
+from .interface import Interface, __version__
 
 # These imports won't be available at runtime, but will help VSCode completion.
 from .api import (

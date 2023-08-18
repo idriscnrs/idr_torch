@@ -10,6 +10,9 @@ from . import __cached__, __name__, __path__
 from .api import API, AutoMasterAddressPort, decorate_methods
 from .utils import IdrTorchWarning, warning_filter
 
+with open(Path(__file__).parent / "VERSION", "r") as file:
+    __version__ = file.read().strip()
+
 
 class EmptyClass(object):
     pass
@@ -41,6 +44,9 @@ class Interface(object):
         self.__dir += dir(EmptyClass())
         self.__dir += config.__all__
         self.__dir += self.__all__
+        self.__dir += [
+            "__version__",
+        ]
 
     def crawl_shipped_APIs(self) -> None:
         from . import api
@@ -55,10 +61,11 @@ class Interface(object):
         self.decorate_methods = decorate_methods
         self.IdrTorchWarning = IdrTorchWarning
         self.modifiers = modifiers
-        self.__file__ = str(Path(__file__).parent)
+        self.__file__ = str(Path(__file__).parent / "__init__.py")
         self.__path__ = __path__
         self.__cached__ = __cached__
         self.__name__ = __name__
+        self.__version__ = __version__
         self.__all__ = [
             "api",
             "API",
@@ -72,6 +79,9 @@ class Interface(object):
             "all_APIs",
             "crawl_module_for_APIs",
         ]
+
+    def __repr__(self) -> str:
+        return f"<module '{self.__name__}' from '{self.__file__}'"
 
     def __dir__(self) -> str:
         return self.__dir
