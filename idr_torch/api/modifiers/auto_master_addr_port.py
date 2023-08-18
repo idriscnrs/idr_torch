@@ -1,14 +1,14 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from functools import wraps
 import os
+from functools import wraps
 
-from .decorate_methods import decorate_methods
 from .. import API
-
+from .decorate_methods import decorate_methods
 
 env_variables_set: bool = False
+
 
 def set_master_addr_port_env_variables(func):
     @wraps(func)
@@ -19,6 +19,7 @@ def set_master_addr_port_env_variables(func):
             os.environ["MASTER_ADDR"] = self.master_address()
             os.environ["MASTER_PORT"] = str(self.port())
         return func(self)
+
     return wrapper
 
 

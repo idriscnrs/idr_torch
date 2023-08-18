@@ -2,15 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import List
 import warnings
+from typing import List
 
-from .base import API
 from ..utils import IdrTorchWarning
+from .base import API
 
 
 class TorchElasticAPI(API):
-
     priority: int = 9000
     name: str = "TorchElastic"
 
@@ -44,7 +43,7 @@ class TorchElasticAPI(API):
             "involved in a distributed computation. So you will only "
             "get the address of the master.",
             category=IdrTorchWarning,
-            stacklevel=4
+            stacklevel=4,
         )
         return [self.master_address()]
 

@@ -10,7 +10,6 @@ from .modifiers import AutoMasterAddressPort
 
 @AutoMasterAddressPort
 class SlurmAPI(API):
-
     priority: int = 10000
     name: str = "Slurm"
 
@@ -62,6 +61,7 @@ class SlurmAPI(API):
             (str): the first node to host the master process
         """
         from re import findall, split, sub
+
         regex = "\[([^[\]]*)\]"
         all_replacement: list[str] = findall(regex, hostlist)
         new_values = [split("-|,", element)[0] for element in all_replacement]

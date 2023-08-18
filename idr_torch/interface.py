@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import warnings
 from inspect import isclass
 from pathlib import Path
-from typing import Callable, Any, List
-import warnings
+from typing import Any, Callable, List
 
 from . import __cached__, __name__, __path__
 from .api import API, AutoMasterAddressPort, decorate_methods
@@ -19,7 +19,6 @@ class EmptyClass(object):
 
 
 class Interface(object):
-
     def __init__(self):
         self._available_APIs: List[API] = []
         self.crawl_shipped_APIs()
@@ -33,13 +32,15 @@ class Interface(object):
 
     def add_API_functions(self) -> None:
         from . import config
+
         for method_name in config.__all__:
-            self.add_attribute(method_name, self.make_new_func(
-                getattr(config, method_name).__name__
-            ))
+            self.add_attribute(
+                method_name, self.make_new_func(getattr(config, method_name).__name__)
+            )
 
     def make_dir(self):
         from . import config
+
         self.__dir: List[str] = []
         self.__dir += dir(EmptyClass())
         self.__dir += config.__all__
@@ -50,11 +51,13 @@ class Interface(object):
 
     def crawl_shipped_APIs(self) -> None:
         from . import api
+
         self.crawl_module_for_APIs(api)
 
     def add_other_object_for_easy_access(self) -> None:
         from . import api
         from .api import modifiers
+
         self.api = api
         self.API = API
         self.AutoMasterAddressPort = AutoMasterAddressPort
@@ -94,6 +97,7 @@ class Interface(object):
             if warning_list:
                 warning_filter.warn(warning_list)
             return output
+
         return property(redirect)
 
     def register_API(self, new_API: API) -> None:

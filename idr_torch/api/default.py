@@ -1,22 +1,18 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from contextlib import closing
 import os
 import socket
+from contextlib import closing
 from typing import List
 
 from .base import API
-from .modifiers import (
-    AutoMasterAddressPort,
-    UndistributedWarning,
-)
+from .modifiers import AutoMasterAddressPort, UndistributedWarning
 
 
 @UndistributedWarning
 @AutoMasterAddressPort
 class DefaultAPI(API):
-
     priority: int = 0
     name: str = "Sequential"
 

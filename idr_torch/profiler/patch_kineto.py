@@ -4,11 +4,12 @@
 import os
 import sys
 from functools import wraps
-from packaging.version import Version
 from re import sub
 from typing import Optional
 
 import torch.profiler
+from packaging.version import Version
+
 
 class persistent_locals(object):
     """
@@ -23,7 +24,7 @@ class persistent_locals(object):
 
     def __call__(self, *args, **kwargs):
         def tracer(frame, event, arg):
-            if event=='return':
+            if event == "return":
                 self._locals = frame.f_locals.copy()
 
         # tracer is activated on next call, return or exception
@@ -45,11 +46,10 @@ class persistent_locals(object):
 
 
 if torch.__version__ >= Version("1.12.0"):
+
     @wraps(torch.profiler.tensorboard_trace_handler)
     def tensorboard_trace_handler(
-        dir_name: str,
-        worker_name: Optional[str] = None,
-        use_gzip: bool=False
+        dir_name: str, worker_name: Optional[str] = None, use_gzip: bool = False
     ):
         handler_fn = torch.profiler.tensorboard_trace_handler(
             dir_name=dir_name,
@@ -64,7 +64,7 @@ if torch.__version__ >= Version("1.12.0"):
             file_name = handler_fn._locals["file_name"]
             dir_name = handler_fn._locals["dir_name"]
             handler_fn.clear_locals()
-            with open(os.path.join(dir_name, file_name), 'r+') as file:
+            with open(os.path.join(dir_name, file_name), "r+") as file:
                 content = file.read()
                 file.seek(0)
                 file.truncate()

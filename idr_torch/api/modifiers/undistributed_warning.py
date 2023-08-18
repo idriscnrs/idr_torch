@@ -1,12 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from functools import wraps
 import warnings
+from functools import wraps
 
+from ...utils import IdrTorchWarning
 from .. import API
 from .decorate_methods import decorate_methods
-from ...utils import IdrTorchWarning
 
 
 def warn(func):
@@ -19,10 +19,12 @@ def warn(func):
                 "(such as srun). Back to default (non distributed) values"
             ),
             category=IdrTorchWarning,
-            stacklevel=4
+            stacklevel=4,
         )
         return func(self)
+
     return wrapper
+
 
 def UndistributedWarning(cls: API) -> API:
     return decorate_methods(cls, func_to_apply=warn)

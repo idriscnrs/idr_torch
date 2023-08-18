@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import List, Tuple, Set
 import warnings
+from typing import List, Set, Tuple
 
 
 class IdrTorchWarning(RuntimeWarning):
@@ -10,11 +10,11 @@ class IdrTorchWarning(RuntimeWarning):
     Type (subtype of RuntimeWarning) of all warnings raised by idr_torch.
     You can use it to customize warning filters.
     """
+
     pass
 
 
 class WarningFilter:
-
     def __init__(self):
         self.registry: Set[Tuple[str, type[Warning]]] = set()
 
@@ -37,5 +37,6 @@ class WarningFilter:
                     category=warning.message.__class__,
                     stacklevel=3,
                 )
+
 
 warning_filter = WarningFilter()
