@@ -9,4 +9,4 @@ from .config import *
 from .interface import Interface, __version__
 from .utils import IdrTorchWarning as IdrTorchWarning
 
-sys.modules[__name__] = Interface()
+sys.modules[__name__] = Interface()  # type: ignore[assignment]

@@ -4,7 +4,7 @@
 import os
 import socket
 from contextlib import closing
-from typing import List
+from typing import List, Optional
 
 from .base import API
 from .modifiers import AutoMasterAddressPort, UndistributedWarning
@@ -18,7 +18,7 @@ class DefaultAPI(API):
 
     def __init__(self):
         self.base_port: int = 13689
-        self.current_port: int = None
+        self.current_port: Optional[int] = None
 
     @staticmethod
     def find_available_port() -> int:

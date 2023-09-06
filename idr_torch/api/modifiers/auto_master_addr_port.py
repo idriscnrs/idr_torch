@@ -3,6 +3,7 @@
 
 import os
 from functools import wraps
+from typing import Type
 
 from .. import API
 from .decorate_methods import decorate_methods
@@ -23,5 +24,5 @@ def set_master_addr_port_env_variables(func):
     return wrapper
 
 
-def AutoMasterAddressPort(cls: API) -> API:
+def AutoMasterAddressPort(cls: Type[API]) -> Type[API]:
     return decorate_methods(cls, func_to_apply=set_master_addr_port_env_variables)

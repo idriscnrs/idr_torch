@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import warnings
-from typing import List, Set, Tuple
+from typing import List, Set, Tuple, Type, Union
 
 
 class IdrTorchWarning(RuntimeWarning):
@@ -16,9 +16,9 @@ class IdrTorchWarning(RuntimeWarning):
 
 class WarningFilter:
     def __init__(self):
-        self.registry: Set[Tuple[str, type[Warning]]] = set()
+        self.registry: Set[Tuple[str, Union[Type[str], Type[Warning]]]] = set()
 
-    def block(self, warning: Warning) -> bool:
+    def block(self, warning: Union[str, Warning]) -> bool:
         text = str(warning)
         category = warning.__class__
         if not isinstance(warning, IdrTorchWarning):
@@ -29,12 +29,17 @@ class WarningFilter:
             return False
         return True
 
-    def warn(self, warning_list: List[Warning]):
+    def warn(self, warning_list: List[warnings.WarningMessage]):
         for warning in warning_list:
             if not self.block(warning.message):
+                category = (
+                    warning.message.__class__
+                    if isinstance(warning.message, Warning)
+                    else Warning
+                )
                 warnings.warn(
                     message=str(warning.message),
-                    category=warning.message.__class__,
+                    category=category,
                     stacklevel=3,
                 )
 

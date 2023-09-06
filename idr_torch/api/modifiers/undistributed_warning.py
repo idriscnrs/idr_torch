@@ -3,6 +3,7 @@
 
 import warnings
 from functools import wraps
+from typing import Type
 
 from ...utils import IdrTorchWarning
 from .. import API
@@ -26,5 +27,5 @@ def warn(func):
     return wrapper
 
 
-def UndistributedWarning(cls: API) -> API:
+def UndistributedWarning(cls: Type[API]) -> Type[API]:
     return decorate_methods(cls, func_to_apply=warn)

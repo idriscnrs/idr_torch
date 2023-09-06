@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import warnings
+from collections.abc import Iterable
 from importlib.metadata import version
 from inspect import isclass
 from pathlib import Path
-from typing import Any, Callable, List
+from typing import Any, List
 
-from . import __cached__, __name__, __path__
-from .api import API, AutoMasterAddressPort, decorate_methods
+from . import __name__, __path__
+from .api import API, AutoMasterAddressPort, DefaultAPI, decorate_methods
 from .utils import IdrTorchWarning, warning_filter
 
 __version__ = version(__name__)
@@ -66,7 +67,6 @@ class Interface(object):
         self.modifiers = modifiers
         self.__file__ = str(Path(__file__).parent / "__init__.py")
         self.__path__ = __path__
-        self.__cached__ = __cached__
         self.__name__ = __name__
         self.__version__ = __version__
         self.__all__ = [
@@ -86,10 +86,10 @@ class Interface(object):
     def __repr__(self) -> str:
         return f"<module '{self.__name__}' from '{self.__file__}'"
 
-    def __dir__(self) -> str:
+    def __dir__(self) -> Iterable[str]:
         return self.__dir
 
-    def make_new_func(self, dest_name: str) -> Callable:
+    def make_new_func(self, dest_name: str) -> property:
         def redirect(self: Interface) -> Any:
             with warnings.catch_warnings(record=True) as warning_list:
                 api = self.get_launcher_API()
@@ -114,6 +114,7 @@ class Interface(object):
         for api in self._available_APIs:
             if api.is_launcher():
                 return api
+        return DefaultAPI()
 
     @property
     def current_API(self) -> str:
