@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 
-import os
-
 from setuptools import find_packages, setup
 
 PACKAGE_NAME = "idr_torch"
@@ -10,7 +8,7 @@ AUTHOR = "IDRIS"
 AUTHOR_EMAIL = "assist@idris.fr"
 URL = "https://www.idris.fr"
 
-with open(os.path.join(PACKAGE_NAME, VERSIONFILE), "r") as file:
+with open(VERSIONFILE, "r") as file:
     VERSION = file.read().strip()
 
 setup(

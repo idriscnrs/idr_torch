@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import warnings
+from importlib.metadata import version
 from inspect import isclass
 from pathlib import Path
 from typing import Any, Callable, List
@@ -10,8 +11,7 @@ from . import __cached__, __name__, __path__
 from .api import API, AutoMasterAddressPort, decorate_methods
 from .utils import IdrTorchWarning, warning_filter
 
-with open(Path(__file__).parent / "VERSION", "r") as file:
-    __version__ = file.read().strip()
+__version__ = version(__name__)
 
 
 class EmptyClass(object):
