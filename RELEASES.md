@@ -1,5 +1,13 @@
 # Releases
 
+## 2.0.1
+*September 2023*
+
+#### Bugs corrected
+
+- Solved an issue where the local world size could not be extracted correctly as the new version of SLURM provides the number of nodes in a multi-node with the following pattern `<local_world_size>(x<nnodes>)`
+
+
 ## 2.0.0
 *August 2023*
 
