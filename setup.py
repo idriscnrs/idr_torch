@@ -3,7 +3,7 @@
 from setuptools import find_packages, setup
 
 PACKAGE_NAME = "idr_torch"
-VERSIONFILE = "VERSION"
+VERSIONFILE = "VERSION.txt"
 AUTHOR = "IDRIS"
 AUTHOR_EMAIL = "assist@idris.fr"
 URL = "https://www.idris.fr"
