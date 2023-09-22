@@ -26,7 +26,9 @@ class SlurmAPI(API):
         return int(os.environ["SLURM_STEP_NUM_TASKS"])
 
     def local_world_size(self) -> int:
-        return int(os.environ["SLURM_STEP_TASKS_PER_NODE"])
+        lws = os.environ["SLURM_STEP_TASKS_PER_NODE"]
+        lws = lws.split("(")[0]
+        return int(lws)
 
     def num_nodes(self) -> int:
         return int(os.environ["SLURM_STEP_NUM_NODES"])
