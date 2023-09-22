@@ -1,5 +1,7 @@
 # idr_torch
 
+## Description
+
 Permet de récupérer les variables SLURM afin de gérér le multi-GPU/multi-noeuds pour le parallélisme sur Pytorch.
 
 ```python
@@ -22,3 +24,25 @@ Les nouvelles APIs doivent hériter de `idr_torch.API`. Si on veut faire en sort
 On patche aussi le profiler. Il suffit de remplacer `from torch.profiler import ...` par `from idr_torch.profiler import ...`.
 
 Note : idr_torch est compatible avec submitit.
+
+## Installation
+
+### With [idr-pypi](https://idrforge.prive.idris.fr/assistance/outils/idr_pypi) 🐍 (by default)
+
+```bash
+pip install idris[torch]
+```
+
+### Master from [idr-pypi](https://idrforge.prive.idris.fr/assistance/outils/idr_pypi) 🐍
+
+```bash
+pip install idris-nightly[torch]
+```
+
+### From source
+
+```bash
+git clone https://idrforge.prive.idris.fr/assistance/outils/idr_torch.git
+cd idr_torch
+pip install .
+```
