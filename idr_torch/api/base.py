@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABC, abstractmethod
-from typing import List, Union
+from typing import List, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import torch
 
 
 class API(ABC):
@@ -91,3 +94,11 @@ class API(ABC):
         Detects whether the process is the master (i.e. the rank 0).
         """
         return self.rank() == 0
+
+    def device(self) -> "torch.device":
+        import torch
+
+        if torch.cuda.is_available():
+            return torch.device(f"cuda:{self.local_rank()}")
+        else:
+            return torch.device("cpu")

@@ -15,6 +15,7 @@ nodelist = API.nodelist
 master_addr = API.master_address
 master_port = API.port
 is_master = API.is_master
+device = API.device
 
 # Aliases
 ntasks = world_size
@@ -51,4 +52,5 @@ __all__ = [
     "host",
     "is_master",
     "master",
+    "device",
 ]
