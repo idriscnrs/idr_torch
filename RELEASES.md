@@ -1,5 +1,12 @@
 # Releases
 
+## 2.1.0
+*February 2024*
+
+- Slurm and Default APIs now also set the following environment variables: RANK, LOCAL_RANK, WORLD_SIZE, LOCAL_WORLD_SIZE. It should allow torch to initialize only with environment variables.
+- New API Endpoint: idr_torch.device gives a torch CUDA device if possible, otherwise a torch CPU device.
+
+
 ## 2.0.1
 *September 2023*
 
