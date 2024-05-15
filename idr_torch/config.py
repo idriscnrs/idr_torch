@@ -16,6 +16,7 @@ master_addr = API.master_address
 master_port = API.port
 is_master = API.is_master
 device = API.device
+init_process_group = API.init_process_group
 
 # Aliases
 ntasks = world_size
@@ -25,6 +26,8 @@ ntasks_per_node = local_world_size
 nnodes = num_nodes
 cpus_per_task = cpus
 master_address = master_addr
+init_pg = init_process_group
+init = init_process_group
 
 
 __all__ = [
@@ -47,4 +50,7 @@ __all__ = [
     "master_address",
     "is_master",
     "device",
+    "init_process_group",
+    "init_pg",
+    "init",
 ]

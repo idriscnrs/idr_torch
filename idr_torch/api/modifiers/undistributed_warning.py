@@ -12,7 +12,7 @@ from .decorate_methods import decorate_methods
 
 def warn(func):
     @wraps(func)
-    def wrapper(self):
+    def wrapper(self, *args, **kwargs):
         warnings.warn(
             message=(
                 "Calling idr_torch only makes sense within a distributed execution "
@@ -22,7 +22,7 @@ def warn(func):
             category=IdrTorchWarning,
             stacklevel=4,
         )
-        return func(self)
+        return func(self, *args, **kwargs)
 
     return wrapper
 

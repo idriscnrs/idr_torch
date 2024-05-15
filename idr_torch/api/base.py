@@ -8,6 +8,11 @@ if TYPE_CHECKING:
     import torch
 
 
+def keep_as_func(func: callable) -> callable:
+    setattr(func, "__keep_as_func__", True)
+    return func
+
+
 class API(ABC):
     priority: int = 5000
     name: str = "AbstractAPI"
@@ -102,3 +107,11 @@ class API(ABC):
             return torch.device(f"cuda:{self.local_rank()}")
         else:
             return torch.device("cpu")
+
+    @keep_as_func
+    def init_process_group(self, *args, **kwargs) -> "torch.device":
+        import torch.distributed as dist
+        _kwargs = dict(rank=self.rank(), world_size=self.world_size())
+        _kwargs.update(**kwargs)
+        dist.init_process_group(*args, **kwargs)
+        return self.device()

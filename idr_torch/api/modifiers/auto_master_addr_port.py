@@ -13,7 +13,7 @@ env_variables_set: bool = False
 
 def set_master_addr_port_env_variables(func):
     @wraps(func)
-    def wrapper(self):
+    def wrapper(self, *args, **kwargs):
         global env_variables_set
         if not env_variables_set:
             env_variables_set = True  # must be done before actually setting the variable to prevent stackoverflow
@@ -23,7 +23,7 @@ def set_master_addr_port_env_variables(func):
             os.environ["LOCAL_RANK"] = str(self.local_rank())
             os.environ["WORLD_SIZE"] = str(self.world_size())
             os.environ["LOCAL_WORLD_SIZE"] = str(self.local_world_size())
-        return func(self)
+        return func(self, *args, **kwargs)
 
     return wrapper
 

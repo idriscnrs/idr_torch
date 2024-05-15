@@ -7,7 +7,7 @@ from collections.abc import Iterable
 from importlib.metadata import version
 from inspect import isclass
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, Union
 
 from . import __name__, __path__
 from .api import API, AutoMasterAddressPort, DefaultAPI, decorate_methods
@@ -36,9 +36,12 @@ class Interface(object):
         from . import config
 
         for method_name in config.__all__:
-            self.add_attribute(
-                method_name, self.make_new_func(getattr(config, method_name).__name__)
+            base_function = getattr(config, method_name)
+            new_function = self.make_new_function(
+                base_function.__name__,
+                as_property=not getattr(base_function, "__keep_as_func__", False),
             )
+            self.add_attribute(method_name, new_function)
 
     def make_dir(self):
         from . import config
@@ -91,16 +94,19 @@ class Interface(object):
     def __dir__(self) -> Iterable[str]:
         return self.__dir
 
-    def make_new_func(self, dest_name: str) -> property:
-        def redirect(self: Interface) -> Any:
+    def make_new_function(self, dest_name: str, /, as_property: bool = True) -> Union[property, callable]:
+        def redirect(self: Interface, *args, **kwargs) -> Any:
             with warnings.catch_warnings(record=True) as warning_list:
                 api = self.get_launcher_API()
-                output = getattr(api, dest_name)()
+                output = getattr(api, dest_name)(*args, **kwargs)
             if warning_list:
                 warning_filter.warn(warning_list)
             return output
 
-        return property(redirect)
+        if as_property:
+            return property(redirect)
+        else:
+            return redirect
 
     def register_API(self, new_API: API) -> None:
         for i, api in enumerate(self._available_APIs):
