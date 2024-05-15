@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import socket
 import warnings
 from collections.abc import Iterable
 from importlib.metadata import version
@@ -81,6 +82,7 @@ class Interface(object):
             "current_API",
             "all_APIs",
             "crawl_module_for_APIs",
+            "summary",
         ]
 
     def __repr__(self) -> str:
@@ -133,3 +135,23 @@ class Interface(object):
             elif isinstance(obj, API) and obj.__class__ is not API:
                 # obj is already the instance
                 self.register_API(obj)
+
+    def summary(self, /, display: bool = True, tab_length: int = 4) -> str:
+        string = f"{self.current_API}(\n"
+        values = {
+            "rank": self.rank,
+            "local_rank": self.local_rank,
+            "world_size": self.world_size,
+            "local_world_size": self.local_world_size,
+            "cpus_per_task": self.cpus,
+            "nodelist": self.nodelist,
+            "hostname": socket.gethostname(),
+            "master_address": self.master_addr,
+            "master_port": self.master_port,
+        }
+        for key, value in values.items():
+            string += " " * tab_length + f"{key}={value},\n"
+        string += ")"
+        if display:
+            print(string)
+        return string
