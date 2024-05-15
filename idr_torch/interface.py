@@ -5,6 +5,7 @@ import socket
 import warnings
 from collections.abc import Iterable
 from importlib.metadata import version
+from functools import wraps
 from inspect import isclass
 from pathlib import Path
 from typing import Any, List, Union
@@ -95,6 +96,7 @@ class Interface(object):
         return self.__dir
 
     def make_new_function(self, dest_name: str, /, as_property: bool = True) -> Union[property, callable]:
+        @wraps(getattr(API, dest_name))
         def redirect(self: Interface, *args, **kwargs) -> Any:
             with warnings.catch_warnings(record=True) as warning_list:
                 api = self.get_launcher_API()
