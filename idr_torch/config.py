@@ -24,10 +24,7 @@ local_size = local_world_size
 ntasks_per_node = local_world_size
 nnodes = num_nodes
 cpus_per_task = cpus
-hostnames = nodelist
-hostname = master_addr
-host = master_addr
-master = is_master
+master_address = master_addr
 
 
 __all__ = [
@@ -47,10 +44,7 @@ __all__ = [
     "ntasks_per_node",
     "nnodes",
     "cpus_per_task",
-    "hostnames",
-    "hostname",
-    "host",
+    "master_address",
     "is_master",
-    "master",
     "device",
 ]
