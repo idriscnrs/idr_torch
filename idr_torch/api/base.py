@@ -1,8 +1,11 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import warnings
 from abc import ABC, abstractmethod
 from typing import List, Union, TYPE_CHECKING
+
+from ..utils import IdrTorchWarning
 
 if TYPE_CHECKING:
     import torch
@@ -109,7 +112,7 @@ class API(ABC):
             return torch.device("cpu")
 
     @keep_as_func
-    def init_process_group(self, *args, **kwargs) -> "torch.device":
+    def init_process_group(self, *args, force_init: bool = False, **kwargs) -> "torch.device":
         r"""
         See https://pytorch.org/docs/stable/distributed.html#torch.distributed.init_process_group
         for more infomation. Also returns the device.
@@ -117,5 +120,26 @@ class API(ABC):
         import torch.distributed as dist
         _kwargs = dict(rank=self.rank(), world_size=self.world_size())
         _kwargs.update(**kwargs)
-        dist.init_process_group(*args, **_kwargs)
+
+        if dist.is_initialized():
+            if force_init:
+                warnings.warn(
+                    message=(
+                        "A distributed environment had already been initialized, "
+                        "but you requested to force the initialization. Attempting "
+                        "to destroy the process group before recreating it."
+                    ),
+                    category=IdrTorchWarning,
+                    stacklevel=4,
+                )
+                dist.destroy_process_group()
+                dist.init_process_group(*args, **_kwargs)
+            else:
+                warnings.warn(
+                    message="A distributed environment had already been initialized. Moving on.",
+                    category=IdrTorchWarning,
+                    stacklevel=4,
+                )
+        else:
+            dist.init_process_group(*args, **_kwargs)
         return self.device()
