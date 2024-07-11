@@ -1,5 +1,13 @@
 # Releases
 
+## 2.2.0
+*July 2024*
+
+- Confusing aliases were removed.
+- Added a summary for the distributed environment.
+- New method: init_process_group. Initializes torch distributed environment via `torch.distributed.init_process_group` and returns the correct device.
+
+
 ## 2.1.0
 *February 2024*
 
