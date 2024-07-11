@@ -112,12 +112,15 @@ class API(ABC):
             return torch.device("cpu")
 
     @keep_as_func
-    def init_process_group(self, *args, force_init: bool = False, **kwargs) -> "torch.device":
+    def init_process_group(
+        self, *args, force_init: bool = False, **kwargs
+    ) -> "torch.device":
         r"""
         See https://pytorch.org/docs/stable/distributed.html#torch.distributed.init_process_group
         for more infomation. Also returns the device.
         """
         import torch.distributed as dist
+
         _kwargs = dict(rank=self.rank(), world_size=self.world_size())
         _kwargs.update(**kwargs)
 

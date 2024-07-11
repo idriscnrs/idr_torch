@@ -95,7 +95,9 @@ class Interface(object):
     def __dir__(self) -> Iterable[str]:
         return self.__dir
 
-    def make_new_function(self, dest_name: str, /, as_property: bool = True) -> Union[property, callable]:
+    def make_new_function(
+        self, dest_name: str, /, as_property: bool = True
+    ) -> Union[property, callable]:
         @wraps(getattr(API, dest_name))
         def redirect(self: Interface, *args, **kwargs) -> Any:
             with warnings.catch_warnings(record=True) as warning_list:
