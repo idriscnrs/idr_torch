@@ -17,6 +17,7 @@ master_port = API.port
 is_master = API.is_master
 device = API.device
 init_process_group = API.init_process_group
+hostname = API.hostname
 
 # Aliases
 ntasks = world_size
@@ -53,4 +54,5 @@ __all__ = [
     "init_process_group",
     "init_pg",
     "init",
+    "hostname",
 ]

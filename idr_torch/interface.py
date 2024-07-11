@@ -155,7 +155,7 @@ class Interface(object):
             "local_world_size": self.local_world_size,
             "cpus_per_task": self.cpus,
             "nodelist": self.nodelist,
-            "hostname": socket.gethostname(),
+            "hostname": self.hostname,
             "master_address": self.master_addr,
             "master_port": self.master_port,
         }

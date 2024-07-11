@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import socket
 import warnings
 from abc import ABC, abstractmethod
 from typing import List, Union, TYPE_CHECKING
@@ -146,3 +147,6 @@ class API(ABC):
         else:
             dist.init_process_group(*args, **_kwargs)
         return self.device()
+
+    def hostname(self) -> str:
+        return socket.gethostname()
