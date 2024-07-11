@@ -146,7 +146,7 @@ class Interface(object):
                 # obj is already the instance
                 self.register_API(obj)
 
-    def summary(self, /, display: bool = True, tab_length: int = 4) -> str:
+    def summary_str(self, /, tab_length: int = 4) -> str:
         string = f"{self.current_API}(\n"
         values = {
             "rank": self.rank,
@@ -162,6 +162,8 @@ class Interface(object):
         for key, value in values.items():
             string += " " * tab_length + f"{key}={value},\n"
         string += ")"
-        if display:
-            print(string)
         return string
+
+    def summary(self, /, tab_length: int = 4) -> str:
+        with warnings.catch_warnings(action="ignore", category=IdrTorchWarning):
+            print(self.summary_str(tab_length=tab_length))
