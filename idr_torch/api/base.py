@@ -117,5 +117,5 @@ class API(ABC):
         import torch.distributed as dist
         _kwargs = dict(rank=self.rank(), world_size=self.world_size())
         _kwargs.update(**kwargs)
-        dist.init_process_group(*args, **kwargs)
+        dist.init_process_group(*args, **_kwargs)
         return self.device()
