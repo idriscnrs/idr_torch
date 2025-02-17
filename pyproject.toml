@@ -8,7 +8,7 @@ authors = [
     {name = "Nathan Cassereau", email = "nathan.cassereau@idris.fr"},
 ]
 description = "Distribution initialization util tool"
-requires-python = ">=8"
+requires-python = ">=3.8"
 license = {text = "MIT"}
 dynamic = ["version"]
 

@@ -140,10 +140,10 @@ class ParallelInterface():
 
     @staticmethod
     def on_client_start() -> None:
-        import idr_torch.notebook___
+        import idr_torch.notebook
 
-        idr_torch.notebook___._parallel_interface.launched = True
-        idr_torch.notebook___.__IS_MASTER__ = False
+        idr_torch.notebook._parallel_interface.launched = True
+        idr_torch.notebook.__IS_MASTER__ = False
 
     @dependent_on_ipyparallel
     def launch(self) -> None:
