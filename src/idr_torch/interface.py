@@ -74,6 +74,7 @@ class Interface(object):
         self.__path__ = __path__
         self.__name__ = __name__
         self.__version__ = __version__
+        self.__spec__ = __spec__
         self.__all__ = [
             "api",
             "API",
