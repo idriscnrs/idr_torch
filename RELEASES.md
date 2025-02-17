@@ -1,5 +1,13 @@
 # Releases
 
+## 2.3.0
+*February 2025*
+
+- Added idr_torch.notebook for easy multi-node notebooks on slurm clusters.
+- Switched from setup.py to pyproject.toml.
+- Use Github actions to auto-publish on release to pypi.
+
+
 ## 2.2.0
 *July 2024*
 
