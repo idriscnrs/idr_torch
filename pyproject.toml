@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "idr_torch"
+authors = [
+    {name = "Nathan Cassereau", email = "nathan.cassereau@idris.fr"},
+]
+description = "Distribution initialization util tool"
+requires-python = ">=8"
+license = {text = "MIT"}
+dynamic = ["version"]
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3 :: Only",
+]
+readme = "README.md"
+
+[project.optional-dependencies]
+notebook = ["ipyparallel"]
+
+[project.urls]
+"Homepage" = "https://github.com/idriscnrs/idr_torch"
+"Source" = "https://github.com/idriscnrs/idr_torch"
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.setuptools.dynamic]
+version = {file = ["VERSION.txt"]}
