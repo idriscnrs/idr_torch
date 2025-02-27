@@ -1,11 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import socket
 import warnings
 from collections.abc import Iterable
-from importlib.metadata import version
 from functools import wraps
+from importlib.metadata import version
 from inspect import isclass
 from pathlib import Path
 from typing import Any, List, Union

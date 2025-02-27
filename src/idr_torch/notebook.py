@@ -27,16 +27,16 @@ else:
 __spec__ = None
 __IS_MASTER__: bool = True
 
+
 def getsource(func: Callable, /, ignore_first_n_lines: int = 0) -> str:
     src = inspect.getsource(func)
     while ignore_first_n_lines > 0:
-        src = src[src.find("\n") + 1:]
+        src = src[src.find("\n") + 1 :]
         ignore_first_n_lines -= 1
     return dedent(src)
-        
+
 
 def dependent_on_ipyparallel(func: Callable) -> Callable:
-
     if IPYPARALLEL_AVAILABLE:
         return func
     else:
@@ -49,10 +49,13 @@ def dependent_on_ipyparallel(func: Callable) -> Callable:
                 "This functionality is currently a no-op."
             ),
         )
+
         @wraps(func)
         def wrapper(*args, **kwargs):
             pass
+
         return wrapper
+
 
 def only_if_launched(func: Callable) -> Callable:
     @wraps(func)
@@ -64,6 +67,7 @@ def only_if_launched(func: Callable) -> Callable:
                 "Distributed execution has not been set up yet. "
                 "You should call idr_torch.notebook.launch"
             )
+
     return wrapper
 
 
@@ -77,10 +81,11 @@ def only_on_master(func: Callable) -> Callable:
                 "This function is only available on the master process but "
                 "you are in distributed mode. Use `%autopx` to disable it."
             )
+
     return wrapper
 
-class ParallelInterface():
 
+class ParallelInterface:
     def __init__(self):
         super().__init__()
         self.rc = None
@@ -91,7 +96,9 @@ class ParallelInterface():
 
     @cached_property
     def host(self) -> str:
-        with warnings.catch_warnings(action="ignore", category=idr_torch.IdrTorchWarning):
+        with warnings.catch_warnings(
+            action="ignore", category=idr_torch.IdrTorchWarning
+        ):
             return idr_torch.hostname
 
     @cached_property
@@ -146,7 +153,7 @@ class ParallelInterface():
         )
         buffer_accumulator = ""
         while True:
-            new_output = self.controller_process.stderr.read(1).decode('utf-8')
+            new_output = self.controller_process.stderr.read(1).decode("utf-8")
             if new_output == "\n":
                 if "subscription started" in buffer_accumulator:
                     break
@@ -162,7 +169,7 @@ class ParallelInterface():
         buffer_accumulator = ""
         num_registered_engines = 0
         while True:
-            new_output = self.engine_process.stderr.read(1).decode('utf-8')
+            new_output = self.engine_process.stderr.read(1).decode("utf-8")
             if new_output == "\n":
                 if "Completed registration" in buffer_accumulator:
                     num_registered_engines += 1
@@ -207,7 +214,7 @@ class ParallelInterface():
         _dict.update(kwargs)
         self.rc[:].push(_dict)
 
-    @dependent_on_ipyparallel        
+    @dependent_on_ipyparallel
     @only_if_launched
     @only_on_master
     def pull(self, *names: str) -> dict[str, list[Any]]:

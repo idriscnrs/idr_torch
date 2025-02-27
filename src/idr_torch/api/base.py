@@ -4,7 +4,7 @@
 import socket
 import warnings
 from abc import ABC, abstractmethod
-from typing import List, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Union
 
 from ..utils import IdrTorchWarning
 
