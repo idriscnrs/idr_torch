@@ -1,16 +1,19 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import idr_torch
+import atexit
 import inspect
-
 import os
+import signal
 import subprocess
 import warnings
-from IPython import get_ipython
 from functools import cached_property, wraps
-from typing import Any, Callable
 from textwrap import dedent
+from typing import Any, Callable
+
+from IPython import get_ipython
+
+import idr_torch
 
 try:
     import ipyparallel as ipp
@@ -21,19 +24,19 @@ else:
     IPYPARALLEL_AVAILABLE = True
 
 
-
+__spec__ = None
 __IS_MASTER__: bool = True
+
 
 def getsource(func: Callable, /, ignore_first_n_lines: int = 0) -> str:
     src = inspect.getsource(func)
     while ignore_first_n_lines > 0:
-        src = src[src.find("\n") + 1:]
+        src = src[src.find("\n") + 1 :]
         ignore_first_n_lines -= 1
     return dedent(src)
-        
+
 
 def dependent_on_ipyparallel(func: Callable) -> Callable:
-
     if IPYPARALLEL_AVAILABLE:
         return func
     else:
@@ -46,10 +49,13 @@ def dependent_on_ipyparallel(func: Callable) -> Callable:
                 "This functionality is currently a no-op."
             ),
         )
+
         @wraps(func)
         def wrapper(*args, **kwargs):
             pass
+
         return wrapper
+
 
 def only_if_launched(func: Callable) -> Callable:
     @wraps(func)
@@ -61,6 +67,7 @@ def only_if_launched(func: Callable) -> Callable:
                 "Distributed execution has not been set up yet. "
                 "You should call idr_torch.notebook.launch"
             )
+
     return wrapper
 
 
@@ -74,18 +81,24 @@ def only_on_master(func: Callable) -> Callable:
                 "This function is only available on the master process but "
                 "you are in distributed mode. Use `%autopx` to disable it."
             )
+
     return wrapper
 
-class ParallelInterface():
 
+class ParallelInterface:
     def __init__(self):
         super().__init__()
         self.rc = None
         self.launched = False
+        self.setup_signal_handlers()
+        self.controller_process = None
+        self.engine_process = None
 
     @cached_property
     def host(self) -> str:
-        with warnings.catch_warnings(action="ignore", category=idr_torch.IdrTorchWarning):
+        with warnings.catch_warnings(
+            action="ignore", category=idr_torch.IdrTorchWarning
+        ):
             return idr_torch.hostname
 
     @cached_property
@@ -101,14 +114,46 @@ class ParallelInterface():
         ipython = get_ipython()
         return ipython.magics_manager.magics["line"]["autopx"].__self__
 
+    def kill_process(self, process: subprocess.Popen) -> None:
+        if process and process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
+        return None
+
+    @dependent_on_ipyparallel
+    @only_if_launched
+    @only_on_master
+    def cleanup(self):
+        if self.launched:
+            if self.rc is not None:
+                self.rc.shutdown()
+                self.rc = None
+
+            self.controller_process = self.kill_process(self.controller_process)
+            self.engine_process = self.kill_process(self.engine_process)
+            self.launched = False
+
+    def setup_signal_handlers(self):
+        def handler(signum, frame):
+            self.cleanup()
+            signal.signal(signum, signal.SIG_DFL)
+            os.kill(os.getpid(), signum)
+
+        atexit.register(self.cleanup)
+        signal.signal(signal.SIGTERM, handler)
+        signal.signal(signal.SIGINT, handler)
+
     def launch_controller(self) -> None:
-        controller = subprocess.Popen(
+        self.controller_process = subprocess.Popen(
             ["ipcontroller", "--ip", self.host, "--cluster-id", self.cluster_id],
             stderr=subprocess.PIPE,
         )
         buffer_accumulator = ""
         while True:
-            new_output = controller.stderr.read(1).decode('utf-8')
+            new_output = self.controller_process.stderr.read(1).decode("utf-8")
             if new_output == "\n":
                 if "subscription started" in buffer_accumulator:
                     break
@@ -117,14 +162,14 @@ class ParallelInterface():
         print("Controller started")
 
     def launch_engines(self) -> None:
-        engine = subprocess.Popen(
+        self.engine_process = subprocess.Popen(
             ["srun", "ipengine", "--cluster-id", self.cluster_id],
             stderr=subprocess.PIPE,
         )
         buffer_accumulator = ""
         num_registered_engines = 0
         while True:
-            new_output = engine.stderr.read(1).decode('utf-8')
+            new_output = self.engine_process.stderr.read(1).decode("utf-8")
             if new_output == "\n":
                 if "Completed registration" in buffer_accumulator:
                     num_registered_engines += 1
@@ -169,7 +214,7 @@ class ParallelInterface():
         _dict.update(kwargs)
         self.rc[:].push(_dict)
 
-    @dependent_on_ipyparallel        
+    @dependent_on_ipyparallel
     @only_if_launched
     @only_on_master
     def pull(self, *names: str) -> dict[str, list[Any]]:
@@ -188,3 +233,4 @@ enable = _parallel_interface.enable
 launch = _parallel_interface.launch
 push = _parallel_interface.push
 pull = _parallel_interface.pull
+cleanup = _parallel_interface.cleanup
