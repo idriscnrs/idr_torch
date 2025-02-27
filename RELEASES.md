@@ -1,5 +1,12 @@
 # Releases
 
+## 2.4.0
+*February 2025*
+
+- Solved an issue where importing could fail in Jupyter notebook because of \_\_spec\_\_.
+- Added a cleanup function because why the hell not!
+
+
 ## 2.3.0
 *February 2025*
 
